@@ -18,7 +18,16 @@ typedef struct {
 } Environment;
 
 // Q-Learning
-typedef struct QLearning QLearning;
+typedef struct QLearning {
+    State state;
+    Action actions;
+    double alpha;
+    double gamma;
+    double epsilon;
+    double **qtable;
+    int state_size;
+    int action_size;
+} QLearning;
 QLearning *ql_create(State state, Action actions, double alpha, double gamma, double epsilon);
 void ql_update(QLearning *ql, State state, Action action, double reward, State next_state);
 int ql_get_action(QLearning *ql, State state);

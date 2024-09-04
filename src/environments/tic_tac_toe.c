@@ -1,6 +1,10 @@
-#include "tic_tac_toe.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include "tic_tac_toe.h"
+
+static bool check_win(TicTacToeEnv* env);
+static bool check_draw(TicTacToeEnv* env);
 
 TicTacToeEnv* tic_tac_toe_init() {
     TicTacToeEnv* env = (TicTacToeEnv*)malloc(sizeof(TicTacToeEnv));
@@ -100,7 +104,7 @@ static bool check_win(TicTacToeEnv* env) {
 static bool check_draw(TicTacToeEnv* env) {
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if (env->state[i][j] == EMPTY) {
+            if (env->state.board[i][j] == EMPTY) {
                 return false;
             }
         }

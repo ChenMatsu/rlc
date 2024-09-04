@@ -1,6 +1,6 @@
-#include "rlc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "rlc.h"
 
 DQN* dqn_create(State state, Action actions, double alpha, double gamma, double epsilon) {
     // TODO
