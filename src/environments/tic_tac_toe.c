@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "utils.h"
 #include "tic_tac_toe.h"
 
 static bool check_win(TicTacToeEnv* env);
@@ -17,7 +19,49 @@ void tic_tac_toe_reset(TicTacToeEnv* env) {
     env->state.current_player = PLAYER_X;
 }
 
-double tic_tac_toe_step(TicTacToeEnv* env, int action, TicTacToeState* next_state, bool* done) {
+void tic_tac_toe_step_human(TicTacToeEnv* env, int action) {
+    int row = action / BOARD_SIZE;
+    int col = action % BOARD_SIZE;
+
+    printf("Your action = %d, row = %d, col = %d\n", action, row, col);
+
+    if (!tic_tac_toe_is_valid_action(env, action)) {
+        printf("The cell is already taken! Try again. \n"); 
+        return;
+    }
+    
+    printf("Player %c takes action %d\n", env->state.current_player == PLAYER_X ? 'X' : 'O', action);
+    env->state.board[row][col] = env->state.current_player;
+
+    if (check_win(env)) {
+        env->state.done = true;
+        println("Player %c wins!", env->state.current_player == PLAYER_X ? 'X' : 'O');
+        tic_tac_toe_render(env);
+        return;
+    }
+
+    if (check_draw(env)) {
+        env->state.done = true;
+        println("It's a draw!");
+        tic_tac_toe_render(env);
+        return;
+    }
+    
+    env->state.current_player = -env->state.current_player;
+    return;
+}
+
+/**
+ * @brief 
+ *      RL powered step function for Tic-Tac-Toe. This should provide with multiple algorithms.
+ * 
+ * @param
+ *      env: the environment
+ *      action: the action to be taken between 0~8 (inclusive) from upper-left to lower-right
+ *      next_state: the next state after taking the action (RL Applied)
+ *      done: the flag to indicate whether the game is over
+ */
+double tic_tac_toe_step_rl(TicTacToeEnv* env, int action, TicTacToeState* next_state, bool* done) {
     int row = action / BOARD_SIZE;
     int col = action % BOARD_SIZE;
 
@@ -55,18 +99,16 @@ bool tic_tac_toe_is_valid_action(TicTacToeEnv* env, int action) {
     return env->state.board[row][col] == EMPTY;
 }
 
-void tic_tac_toe_render(TicTacToeEnv* env, char* buffer) {
-    int pos = 0;
-    char symbols[] = {'.', 'X', 'O'};
+void tic_tac_toe_render(TicTacToeEnv* env) {
+    println("---Current board---");
+    char symbols[] = {'O', '.', 'X'};
 
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            buffer[pos++] = symbols[env->state.board[i][j] + 1];
-            buffer[pos++] = ' ';
+            printf("%c ", symbols[env->state.board[i][j] + 1]);
         }
-        buffer[pos++] = '\n';
+        printf("\n");
     }
-    buffer[pos] = '\0';
 }
 
 void tic_tac_toe_free(TicTacToeEnv* env) {

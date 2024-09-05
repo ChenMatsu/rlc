@@ -1,6 +1,8 @@
 #include <time.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "utils.h"
 
 void init_random_seeds() {
@@ -13,4 +15,12 @@ int get_random_int(int min, int max) {
 
 float get_random_float() {
     return (float)rand() / (float)RAND_MAX;
+}
+
+void println(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    printf("\n");
 }
