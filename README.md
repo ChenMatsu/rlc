@@ -53,7 +53,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Sutton and Barto's Reinforcement Learning: An Introduction
-- Claude Spinning Up
 
 ## Contact
 

@@ -5,32 +5,38 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define MAX_STATES 100
+#define MAX_ACTIONS 100
+
+// @Issue: the states and actions structure might need to be changed.
 typedef struct {
-    // TODO
+    int state;
 } State;
 
 typedef struct {
-    // TODO
+    int action;
 } Action;
 
 typedef struct {
-    // TODO
+    int num_states;
+    int num_actions;
 } Environment;
 
 // Q-Learning
 typedef struct QLearning {
-    State state;
+    State states;
     Action actions;
+    int state_size;
+    int action_size;
     double alpha;
     double gamma;
     double epsilon;
-    double **qtable;
-    int state_size;
-    int action_size;
+    double **q_table;
 } QLearning;
 QLearning *ql_create(State state, Action actions, double alpha, double gamma, double epsilon);
 void ql_update(QLearning *ql, State state, Action action, double reward, State next_state);
 int ql_get_action(QLearning *ql, State state);
+void ql_reset(QLearning *ql);
 void ql_free(QLearning *ql);
 
 // DQN
