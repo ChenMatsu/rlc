@@ -4,6 +4,7 @@
 #include "tic_tac_toe.h"
 
 void tic_tac_toe_normal(TicTacToeEnv* env);
+TicTacToeEnv* tic_tac_toe_rl(TicTacToeEnv* env);
 
 int main() {
     println("Welcome to the Tic-Tac-Toe Game!");
@@ -53,8 +54,7 @@ int main() {
          * TODO: Implement the AI vs Human and AI vs AI mode with multiple algorithmsr supported.
          */
         case 2: {
-            // TODO AI vs Human
-            println("AI vs Human mode is not supported yet!");
+            tic_tac_toe_rl(env);
             break;
         }
         case 3: {
@@ -87,4 +87,10 @@ void tic_tac_toe_normal(TicTacToeEnv* env) {
         }
         tic_tac_toe_step_human(env, action);
     }
+}
+
+TicTacToeEnv* tic_tac_toe_rl(TicTacToeEnv* env) {
+    void* algo = select_rl_algorithm();
+
+    // TODO: apply RL algorithm and Human-AI mode.
 }
