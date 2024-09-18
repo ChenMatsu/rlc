@@ -16,21 +16,37 @@ TicTacToeEnv* tic_tac_toe_init() {
 
 void tic_tac_toe_reset(TicTacToeEnv* env) {
     memset(env->state.board, EMPTY, sizeof(env->state.board));
-    env->state.current_player = PLAYER_X;
+    env->state.current_player = PLAYER_X; // Default player
 }
 
-void tic_tac_toe_step_human(TicTacToeEnv* env, int action) {
-    int row = action / BOARD_SIZE;
-    int col = action % BOARD_SIZE;
+void tic_tac_toe_render(TicTacToeEnv* env) {
+    println("---Current board---");
+    char symbols[] = {'O', '.', 'X'};
 
-    printf("Your action = %d, row = %d, col = %d\n", action, row, col);
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            printf("%c ", symbols[env->state.board[i][j] + 1]);
+        }
+        printf("\n");
+    }
+}
 
-    if (!tic_tac_toe_is_valid_action(env, action)) {
-        printf("The cell is already taken! Try again. \n"); 
+void tic_tac_toe_free(TicTacToeEnv* env) {
+    free(env);
+}
+
+void tic_tac_toe_step_human(TicTacToeEnv* env, int move) {
+    int row = move / BOARD_SIZE;
+    int col = move % BOARD_SIZE;
+
+    printf("Your move = %d, row = %d, col = %d\n", move, row, col);
+
+    if (!tic_tac_toe_is_valid_action(env, move)) {
+        printf("The field is already taken! Try again. \n"); 
         return;
     }
     
-    printf("Player %c takes action %d\n", env->state.current_player == PLAYER_X ? 'X' : 'O', action);
+    printf("Player %c takes move %d\n", env->state.current_player == PLAYER_X ? 'X' : 'O', move);
     env->state.board[row][col] = env->state.current_player;
 
     if (check_win(env)) {
@@ -47,7 +63,7 @@ void tic_tac_toe_step_human(TicTacToeEnv* env, int action) {
         return;
     }
     
-    env->state.current_player = -env->state.current_player;
+    env->state.current_player = -env->state.current_player; // Switch player
     return;
 }
 
@@ -99,21 +115,6 @@ bool tic_tac_toe_is_valid_action(TicTacToeEnv* env, int action) {
     return env->state.board[row][col] == EMPTY;
 }
 
-void tic_tac_toe_render(TicTacToeEnv* env) {
-    println("---Current board---");
-    char symbols[] = {'O', '.', 'X'};
-
-    for (int i = 0; i < BOARD_SIZE; i++) {
-        for (int j = 0; j < BOARD_SIZE; j++) {
-            printf("%c ", symbols[env->state.board[i][j] + 1]);
-        }
-        printf("\n");
-    }
-}
-
-void tic_tac_toe_free(TicTacToeEnv* env) {
-    free(env);
-}
 
 static bool check_win(TicTacToeEnv* env) {
     CellState player = env->state.current_player;

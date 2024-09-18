@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "rlc.h"
 #include "utils.h"
 #include "tic_tac_toe.h"
 
 void tic_tac_toe_normal(TicTacToeEnv* env);
-TicTacToeEnv* tic_tac_toe_rl(TicTacToeEnv* env);
+void tic_tac_toe_rl(TicTacToeEnv* env);
 
 int main() {
     println("Welcome to the Tic-Tac-Toe Game!");
@@ -41,8 +42,7 @@ int main() {
         player = input[0];
     }
     
-    TicTacToeEnv* env = tic_tac_toe_init();
-    
+    TicTacToeEnv* env = tic_tac_toe_init();    
     env->state.current_player = (player == 'X') ? PLAYER_X : PLAYER_O;
 
     switch (mode) {
@@ -50,20 +50,17 @@ int main() {
             tic_tac_toe_normal(env);
             break;
         }
-        /**
-         * TODO: Implement the AI vs Human and AI vs AI mode with multiple algorithmsr supported.
-         */
         case 2: {
             tic_tac_toe_rl(env);
             break;
         }
+        // TODO AI vs AI
         case 3: {
-            // TODO AI vs AI
             println("AI vs AI mode is not supported yet!");
             break;
         }
         default: {
-            printf("Invalid mode!\n");
+            println("Invalid mode!");
             break;
         }
     }
@@ -71,26 +68,51 @@ int main() {
 }
 
 void tic_tac_toe_normal(TicTacToeEnv* env) {
-    int action = -1;
-     while(env->state.done == false) {
+    int move = -1;
+    while(env->state.done == false) {
         tic_tac_toe_render(env);
         
-        printf("Enter your action(0~8): ");
-        scanf("%d", &action);
+        printf("Enter your move(0~8): ");
+        scanf("%d", &move);
 
-        while(action < 0 || action > 8) {
-            if(action < 0 || action > 8) {
-                println("Invalid action!");
-                printf("Enter your action(0~8): ");
-                scanf("%d", &action);
+        while(move < 0 || move > 8) {
+            if(move < 0 || move > 8) {
+                println("Invalid move!");
+                printf("Enter your move(0~8): ");
+                scanf("%d", &move);
             }
         }
-        tic_tac_toe_step_human(env, action);
+        tic_tac_toe_step_human(env, move);
     }
 }
 
-TicTacToeEnv* tic_tac_toe_rl(TicTacToeEnv* env) {
-    void* algo = select_rl_algorithm();
+void tic_tac_toe_rl(TicTacToeEnv* env) {
+    RLAlgorithm* opt = (RLAlgorithm*)select_rl_algorithm();  // Select different RL algorithm to compete with AI Agent.
 
-    // TODO: apply RL algorithm and Human-AI mode.
+    int move = -1;
+    while(env->state.done == false) {
+        tic_tac_toe_render(env);
+
+        if(env->state.current_player == PLAYER_X) {
+            // Player's turn
+            println("--- Your turn ---");
+            printf("Enter your move(0~8): ");
+            scanf("%d", &move);
+            
+            while(move < 0 || move > 8) {
+                println("Invalid move!");
+                printf("Enter your move(0~8): ");
+                scanf("%d", &move);
+            }
+
+            tic_tac_toe_step_human(env, move);
+        } else {
+            // AI's turn
+            println("--- Opponent's turn ---");
+            // ql_get_action(opt->algorithm);
+            // double reward = tic_tac_toe_step_rl(env, action, algo->ql->states, env->state.done);
+            // ql_update(algo, env->state, action, reward, algo->ql->states);
+            return;
+        }
+    }
 }
